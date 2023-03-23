@@ -1,0 +1,17 @@
+{
+  "name": "labcontrol_client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^23.2.0",
+    "electron-builder": "^23.6.0",
+    "electron-store": "^8.1.0"
+  }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <label for="">Estado:</label>
+        <span>Conectado</span>
+        <span>Desconectado</span>
+    </div>
+    <div>
+        <label for="">Servidor:</label>
+        <input id="server" type="text">
+    </div>
+
+    <div>
+        <label for="">Puerto:</label>
+        <input id="port" type="number">
+    </div>
+    <div>
+        <button id="btnSave">GUARDAR</button>
+    </div>
+
+
+    <script>
+
+        let server = document.getElementById("server")
+        let port = document.getElementById("port")
+        let btnSave = document.getElementById("btnSave")
+
+        var config;
+
+        window.onload = () => {
+            getConfig();
+        }
+
+        function getConfig() {
+            ipcRenderer.invoke("config", { set: false }).then((res) => {
+                server.value = res.server
+                port.value = res.port
+            });
+        }
+
+        function setConfig() {
+            ipcRenderer.invoke("config", { set: true, server: server.value, port: port.value }).then((res) => {
+                server.value = res.server
+                port.value = res.port
+            });
+        }
+
+        btnSave.addEventListener("click", setConfig)
+
+
+    </script>
+
+</body>
+
+</html>
