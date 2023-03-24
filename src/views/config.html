@@ -27,6 +27,7 @@
         <button id="btnSave">GUARDAR</button>
     </div>
 
+    <script src="../../node_modules/socket.io-client/dist/socket.io.min.js"></script>
 
     <script>
 
@@ -36,21 +37,40 @@
 
         var config;
 
-        window.onload = () => {
-            getConfig();
+        window.onload = async () => {
+            await getConfig()
+            console.log(config)
+            const socket = io(`${config.server.host}:${config.server.port}`,{
+                auth:{
+                    hostname:config.local
+                }
+            })
+
+            socket.on("connect", () => {
+                console.log("sss");
+
+            })
+
+            
+            ipcRenderer.on("closing_window",()=>{
+                socket.disconnect();
+            })
+
         }
 
-        function getConfig() {
-            ipcRenderer.invoke("config", { set: false }).then((res) => {
-                server.value = res.server
-                port.value = res.port
-            });
+        async function getConfig() {
+
+            config = await ipcRenderer.invoke("config", { set: false })
+            server.value = config.server.host;
+            port.value = config.server.port;
+
+            return config
         }
 
         function setConfig() {
-            ipcRenderer.invoke("config", { set: true, server: server.value, port: port.value }).then((res) => {
-                server.value = res.server
-                port.value = res.port
+            ipcRenderer.invoke("config", { set: true, server: { host: server.value, port: port.value } }).then((res) => {
+                server.value = res.server.host
+                port.value = res.server.port
             });
         }
 

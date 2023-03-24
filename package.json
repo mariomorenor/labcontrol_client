@@ -12,6 +12,8 @@
   "dependencies": {
     "electron": "^23.2.0",
     "electron-builder": "^23.6.0",
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "ip": "^1.1.8",
+    "socket.io-client": "^4.6.1"
   }
 }

@@ -1,18 +1,25 @@
-const { exec } = require("child_process")
 const { app, BrowserWindow, Tray, Menu, dialog, ipcMain } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
+const ip = require("ip");
+const os = require("os")
 
 const store = new Store("config");
 
 if (store.size == 0) {
     console.log("Generando Archivo de Configuración")
     store.set("config", {
+        server: {
+            host: "http://localhost",
+            port: 6969
+        },
         password: "L1v1ngF@st3r"
     });
 }
 
 const config = store.get("config");
+config.local = { ip: ip.address(), hostname: os.hostname() }
+
 
 const icon_path = path.join(__dirname, "assets", "icons", "icon.png")
 
@@ -35,6 +42,8 @@ async function createWindow({ view = "", name = "", hide = false } = {}) {
             if (!app.quitting) {
                 event.preventDefault()
                 win.hide()
+            } else {
+                win.webContents.send("closing_window")
             }
         })
     }
@@ -77,7 +86,7 @@ function setTrayIcon() {
 
 app.whenReady().then(async () => {
     setTrayIcon();
-    configWindow = await createWindow({ view: "config.html", name: "config" })
+    configWindow = await createWindow({ view: "config.html", name: "config", hide: true })
     configWindow.hide();
     configWindow.webContents.send("config", config)
 })
@@ -88,18 +97,16 @@ app.on('before-quit', () => app.quitting = true);
 
 ipcMain.handle("config", async (event, data) => {
     if (data.set) {
-        store.set("config.server", data.server)
-        store.set("config.port", data.port)
-
+        store.set("config.server.host", data.server.host)
+        store.set("config.server.port", data.server.port)
         config.server = data.server
-        config.port = data.port
     }
 
     return config
 })
 
 
-function openChrome(url="https://admision.pucesd.edu.ec/login/index.php") {
+function openChrome(url = "https://admision.pucesd.edu.ec/login/index.php") {
     const win = new BrowserWindow({
         fullscreen: true,
     });
@@ -114,3 +121,5 @@ function openChrome(url="https://admision.pucesd.edu.ec/login/index.php") {
 function closeChrome() {
     console.log("cerrado")
 }
+
+
