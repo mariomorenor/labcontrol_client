@@ -13,12 +13,15 @@ if (store.size == 0) {
             host: "http://localhost",
             port: 6969
         },
-        password: "L1v1ngF@st3r"
+        password: "L1v1ngF@st3r",
+        local: {
+            laboratorio: "I"
+        }
     });
 }
 
 const config = store.get("config");
-config.local = { ip: ip.address(), hostname: os.hostname() }
+config.local = Object.assign({ ip: ip.address(), hostname: os.hostname() }, config.local)
 
 
 const icon_path = path.join(__dirname, "assets", "icons", "icon.png")
@@ -123,3 +126,4 @@ function closeChrome() {
 }
 
 
+console.log(config)
