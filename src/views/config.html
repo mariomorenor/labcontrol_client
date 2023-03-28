@@ -40,10 +40,8 @@
         window.onload = async () => {
             await getConfig()
             console.log(config)
-            const socket = io(`${config.server.host}:${config.server.port}`,{
-                auth:{
-                    hostname:config.local
-                }
+            const socket = io(`${config.server.host}:${config.server.port}`, {
+                auth: config.local
             })
 
             socket.on("connect", () => {
@@ -51,8 +49,8 @@
 
             })
 
-            
-            ipcRenderer.on("closing_window",()=>{
+
+            ipcRenderer.on("closing_window", () => {
                 socket.disconnect();
             })
 
